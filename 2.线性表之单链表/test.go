@@ -53,7 +53,7 @@ func (l *LinkList) Append(elem interface{}) {
 // 在指定索引的结点之后插入一个结点
 func (l *LinkList) InsertTo(index int, elem interface{}) bool {
 	// 只允许在结点之间插入
-	if index >= l.Length-1 || index < 0 {
+	if index >= l.Length-1 || index < 0 || l.Length < 2 {
 		return false
 	}
 	current := l.Header
@@ -82,9 +82,11 @@ func (l *LinkList) Delete(index int) bool {
 		fmt.Println("+++++: ", j)
 		j++
 	}
-	current.Next = current.Next.Next
-	//tmp := current.Next.Next
-	//current.Next = tmp
+	if index == l.Length-1 {
+		current.Next = nil
+	} else {
+		current.Next = current.Next.Next
+	}
 	l.Length--
 	return true
 }
@@ -99,13 +101,123 @@ func (l *LinkList) Scan() {
 }
 
 // 单链表返回指定索引的值
-//func (l *LinkList) getElem(index int) interface{} {
-//	l = l
-//}
+func (l *LinkList) getElem(index int) (interface{}, bool) {
+	if index >= 0 && index < l.Length {
+		current := l.Header
+		for i := 0; i < l.Length; i++ {
+			current = current.Next
+			if i == index {
+				return current.Data, true
+			}
+		}
+	}
+	return nil, false
+}
 
-//
-
+/*
 // +++++++++++++++不带头结点的单链表+++++++++++++++++++++++++++++
+// 单链表初始化
+func LinkListInit() *LinkList {
+	return &LinkList{nil, 0}
+}
+
+// 向单链表中插入结点
+func (l *LinkList) Insert(elem interface{}) {
+	elemPtr := &Node{elem, nil}
+	if l.Length == 0 {
+		l.Header = elemPtr
+	} else if l.Length > 0 {
+		elemPtr.Next = l.Header
+		l.Header = elemPtr
+	}
+	l.Length++
+}
+
+// 向单链表末尾追加结点
+func (l *LinkList) Append(elem interface{}) {
+	elemPtr := &Node{elem, nil}
+	if l.Length == 0 {
+		l.Header = elemPtr
+	} else if l.Length > 0 {
+		current := l.Header
+		for current.Next != nil { // 遍历单链表，直到最后一个结点
+			current = current.Next
+		}
+		current.Next = elemPtr
+	}
+	l.Length++
+}
+
+// 在指定索引的结点之后插入一个结点
+func (l *LinkList) InsertTo(index int, elem interface{}) bool {
+	// 只允许在结点之间插入
+	if index >= l.Length-1 || index < 0 || l.Length < 2 {
+		return false
+	}
+	current := l.Header
+	elemPtr := &Node{elem, nil}
+	for i := 1; i < l.Length-1; i++ {
+		current = current.Next
+		if i == index {
+			elemPtr.Next = current.Next
+			current.Next = elemPtr
+		}
+	}
+	l.Length++
+	return true
+
+}
+
+// 删除指定索引的结点
+func (l *LinkList) Delete(index int) bool {
+	if index >= l.Length || index < 0 {
+		return false
+	}
+	j := 1
+	current := l.Header
+	for j < index {
+		current = current.Next
+		j++
+	}
+	if index == l.Length-1 {
+		current.Next = nil
+	} else {
+		current.Next = current.Next.Next
+	}
+	l.Length--
+	return true
+}
+
+// 遍历链表
+func (l *LinkList) Scan() {
+	current := new(Node)
+	for i := 0; i < l.Length; i++ {
+		if i == 0 {
+			current = l.Header
+		} else {
+			current = current.Next
+		}
+		fmt.Printf("第%d的结点数据是%v，下一个结点地址是%v, %p\n", i, current.Data, current.Next, current.Next)
+	}
+}
+
+// 单链表返回指定索引的值
+func (l *LinkList) getElem(index int) (interface{}, bool) {
+	if index >= 0 && index < l.Length {
+		current := new(Node)
+		for i := 0; i < l.Length; i++ {
+			if i == 0 {
+				current = l.Header
+			}
+			current = current.Next
+			if i == index {
+				return current.Data, true
+			}
+		}
+	}
+	return nil, false
+}
+*/
 
 func main() {
 	ll := LinkListInit()
@@ -119,4 +231,6 @@ func main() {
 	ll.Insert("ee")
 	ll.InsertTo(1, "ff")
 	ll.Scan()
+	aa, _ := ll.getElem(0)
+	fmt.Println(aa)
 }
